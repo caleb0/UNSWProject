@@ -7,16 +7,9 @@
 typedef struct _vector {
     double x;
     double y;
-}Vector2; //A Vector struct for storing coordinates
+} Vector2; //A Vector struct for storing coordinates
 
-typedef struct _game * Game;
-
-int main(int argc, char* argv[]){
-    printf("Started game\n");
-    makeGame();
-    return EXIT_SUCCESS;
-}
-typedef struct _game {
+struct _game {
     //Region information
     int regionD[NUM_REGIONS]; //Creates an int for every region that represents a discipline
     int regionDice[NUM_REGIONS]; //Creates an dice value for every region
@@ -41,15 +34,26 @@ typedef struct _game {
     //Leaderboard information
     int topKPI; //Stores the top KPI value
     int topPublication; //Stores the top publication value
-}game;
+};
+
+typedef struct _game * Game;
+
+int main(int argc, char* argv[]){
+    printf("Started game\n");
+    makeGame();
+    return EXIT_SUCCESS;
+}
 
 
-/*void vertexSetToZeroZero(struct Vector2 * v) {
+
+
+void vertexSetToZeroZero(Vector2 * v) {
     v->y = 0;
     v->x = 0;
-}*/
+}
 
 Game makeGame() {
+
     printf("Making a new game\n");
     Game g = malloc(sizeof(struct _game));
     printf("Made new game\n");//malloc memory for the whole game
@@ -57,15 +61,25 @@ Game makeGame() {
     g->whoseTurn = -1; //terra nullis turn
     g->topKPI = NO_ONE;
     g->topPublication = NO_ONE;
-    printf("%g\n",g->vertices[0][0]);
+    printf("About to create vertecies\n");
+    createVertices(g);
 
-    //vertexSetToZeroZero(g->vertices[0][0]);
+    //printf("Here\n");
+    //assert(g->vertices[0][0]->x);
+    g->vertices[0][0]->y;
+        printf("Moo\n");
+printf("%p\n", g->vertices[0][0]);
+        printf("p\n");
+    //printf("%d, %d\n",g->vertices[0][0]->x, g->vertices[0][0]->y);
+printf("Not here\n");
+
+    vertexSetToZeroZero(g->vertices[0][0]);
     return g;
 }
 
 
 
-void createVertex(Game g) {
+void createVertices(Game g) {
 
     int currentTile = 0;
     int currentVertex;
