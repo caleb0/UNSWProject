@@ -1,18 +1,25 @@
 #include "Game.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
 #define NUM_STUDENT 6
+void makeGame();
+void createVertex(Game g);
+void visualiseGame(Game g);
+void createRegions(Game g);
 
-typedef struct _vector {
-    double x;
-    double y;
-}Vector2; //A Vector struct for storing coordinates
+int main(int argc, char* argv[]) {
+	printf("Started\n");
+	makeGame();
+	return EXIT_SUCCESS;
+}
 
 typedef struct _game {
     //Region information
-    int regionD[NUM_REGIONS]; //Creates an int for every region that represents a discipline
-    int regionDice[NUM_REGIONS]; //Creates an dice value for every region
+	region regions[NUM_REGIONS]; // create a region for each region
     
     //Vertex information
-    Vector2 *vertices[NUM_REGIONS][6]; //Creates 6 vertex pointers for each region
+    vertex vertices[NUM_REGIONS][6]; //Creates 6 vertex pointers for each region
     
     //Global information
     int diceResult; //Result of a dice roll
@@ -33,20 +40,75 @@ typedef struct _game {
     int topPublication; //Stores the top publication value
 } game;
 
-Game newGame() {
+void makeGame() {
+	printf("About to allocate a new game\n");
 	Game g = malloc(sizeof(struct _game));//malloc memory for the whole game
 	assert(g != NULL);
+	printf("Game is not null\n");
 	g->whoseTurn = -1; //terra nullis turn
 	g->topKPI = NO_ONE;
 	g->topPublication = NO_ONE;
+	printf("foo\n");
 	createVertex(g);
-	return g;
+	printf("Made a new game\n");
+	createRegions(g);
+	printf("Created regions\n");
+	visualiseGame(g);
+	//return g;
 }
 
+void visualiseGame(Game g) {
+	int i = 0;
+	int a = 0;
+	for (i = 0; i < NUM_REGIONS; i++) {
+		printf("\n\nTile no %d, coordinate: %d, %d\n\n", i, g->regions[i].x, g->regions[i].y);
+		for (a = 0; a < 6; a++) {
+			printf("Vertex (%d, %d) is x: %d, y: %d\n", i, a, g->vertices[i][a].x, g->vertices[i][a].y);
+		}
+	}
+}
+
+void createRegions(Game g) {
+	int xValue = 0;
+	int tileID = 0;
+	while (xValue < 3) {
+		g->regions[tileID].y = 0;
+		g->regions[tileID].x = xValue;
+		xValue++;
+		tileID++;
+	}
+	xValue = 0;
+	while (xValue < 4) {
+		g->regions[tileID].y = 1;
+		g->regions[tileID].x = xValue;
+		xValue++;
+		tileID++;
+	}
+	xValue = 0;
+	while (xValue < 5) {
+		g->regions[tileID].y = 2;
+		g->regions[tileID].x = xValue;
+		xValue++;
+		tileID++;
+	}
+	xValue = 1;
+	while (xValue < 5) {
+		g->regions[tileID].y = 3;
+		g->regions[tileID].x = xValue;
+		xValue++;
+		tileID++;
+	}
+	xValue = 2;
+	while (xValue < 5) {
+		g->regions[tileID].y = 4;
+		g->regions[tileID].x = xValue;
+		xValue++;
+		tileID++;
+	}
+
+}
 
 void createVertex(Game g) {
-	int currentVertexX = 0;
-	int currentVertexY = 0;
 	int currentTile = 0;
 	int currentVertex;
 	while (currentTile < NUM_REGIONS) {
@@ -101,8 +163,12 @@ void createVertex(Game g) {
 					g->vertices[currentTile][currentVertex].y = 4;
 					g->vertices[currentTile][currentVertex].x = (currentVertex - 3) + 2 * (currentTile - 16);
 				}
+				
 			}
+			currentVertex++;
+			
 		}
+		currentTile++;
 	}
 }
 void disposeGame(Game g) {

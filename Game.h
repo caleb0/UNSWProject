@@ -65,6 +65,18 @@
 #define TRUE 1
 #define FALSE 0
 
+typedef struct _vector {
+	int x;
+	int y;
+} vertex; //A Vector struct for storing coordinates
+
+typedef struct _region {
+	int x; //x coord
+	int y; //y coord
+	int diceValue; // dice value
+	int dicipline; // what dicipline is on the region
+} region;
+
 typedef struct _game * Game;
 
 // your team designs this type not us
