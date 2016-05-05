@@ -1,20 +1,34 @@
+<<<<<<< HEAD
 #include "Game.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+=======
+#include "game.h"
+#include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+>>>>>>> origin/master
 #define NUM_STUDENT 6
 void makeGame();
 void createVertex(Game g);
 void visualiseGame(Game g);
 void createRegions(Game g);
 
+<<<<<<< HEAD
 int main(int argc, char* argv[]) {
 	printf("Started\n");
 	makeGame();
 	return EXIT_SUCCESS;
 }
+=======
+typedef struct _vector {
+    double x;
+    double y;
+} Vector2; //A Vector struct for storing coordinates
+>>>>>>> origin/master
 
-typedef struct _game {
+struct _game {
     //Region information
 	region regions[NUM_REGIONS]; // create a region for each region
     
@@ -33,11 +47,12 @@ typedef struct _game {
     int pNumIP[NUM_UNIS]; //Value of IPs for each player
     int pStudents[NUM_UNIS][NUM_STUDENT]; //Value of student types for each player
     int pPublication[NUM_UNIS]; //Value of publications for each player
-	int pARC[NUM_UNIS]; //Value for ARCS for each player
+    int pARC[NUM_UNIS]; //Value for ARCS for each player
     
     //Leaderboard information
     int topKPI; //Stores the top KPI value
     int topPublication; //Stores the top publication value
+<<<<<<< HEAD
 } game;
 
 void makeGame() {
@@ -66,6 +81,49 @@ void visualiseGame(Game g) {
 			printf("Vertex (%d, %d) is x: %d, y: %d\n", i, a, g->vertices[i][a].x, g->vertices[i][a].y);
 		}
 	}
+=======
+};
+
+typedef struct _game * Game;
+
+int main(int argc, char* argv[]){
+    printf("Started game\n");
+    makeGame();
+    return EXIT_SUCCESS;
+}
+
+
+
+
+void vertexSetToZeroZero(Vector2 * v) {
+    v->y = 0;
+    v->x = 0;
+}
+
+Game makeGame() {
+
+    printf("Making a new game\n");
+    Game g = malloc(sizeof(struct _game));
+    printf("Made new game\n");//malloc memory for the whole game
+    assert(g != NULL);
+    g->whoseTurn = -1; //terra nullis turn
+    g->topKPI = NO_ONE;
+    g->topPublication = NO_ONE;
+    printf("About to create vertecies\n");
+    createVertices(g);
+
+    //printf("Here\n");
+    //assert(g->vertices[0][0]->x);
+    g->vertices[0][0]->y;
+        printf("Moo\n");
+printf("%p\n", g->vertices[0][0]);
+        printf("p\n");
+    //printf("%d, %d\n",g->vertices[0][0]->x, g->vertices[0][0]->y);
+printf("Not here\n");
+
+    vertexSetToZeroZero(g->vertices[0][0]);
+    return g;
+>>>>>>> origin/master
 }
 
 void createRegions(Game g) {
@@ -108,6 +166,7 @@ void createRegions(Game g) {
 
 }
 
+<<<<<<< HEAD
 void createVertex(Game g) {
 	int currentTile = 0;
 	int currentVertex;
@@ -170,40 +229,105 @@ void createVertex(Game g) {
 		}
 		currentTile++;
 	}
+=======
+
+void createVertices(Game g) {
+
+    int currentTile = 0;
+    int currentVertex;
+    while (currentTile < NUM_REGIONS) {
+        currentVertex = 0;
+        while (currentVertex < 6) {
+            if (currentTile < 3) {
+                if (currentVertex < 3) {
+                    g->vertices[currentTile][currentVertex]->y = 1;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex + 2) + 2 * currentTile;
+                }
+                else {
+                    g->vertices[currentTile][currentVertex]->y = 0;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex - 3) + 2 * currentTile;
+                }
+            }
+            else if (currentTile < 7) {
+                if (currentVertex < 3) {
+                    g->vertices[currentTile][currentVertex]->y = 2;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex + 1) + 2 * (currentTile - 3);
+                }
+                else {
+                    g->vertices[currentTile][currentVertex]->y = 1;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex - 4) + 2 * (currentTile - 3);
+                }
+            }
+            else if (currentTile < 12) {
+                if (currentVertex < 3) {
+                    g->vertices[currentTile][currentVertex]->y = 3;
+                    g->vertices[currentTile][currentVertex]->x = currentVertex + 2 * (currentTile - 7);
+                }
+                else {
+                    g->vertices[currentTile][currentVertex]->y = 2;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex - 5) + 2 * (currentTile - 7);
+                }
+            }
+            else if (currentTile < 16) {
+                if (currentVertex < 3) {
+                    g->vertices[currentTile][currentVertex]->y = 4;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex + 1) + 2 * (currentTile - 12);
+                }
+                else {
+                    g->vertices[currentTile][currentVertex]->y = 3;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex - 4) + 2 * (currentTile - 12);
+                }
+            }
+            else if (currentTile < 19) {
+                if (currentVertex < 3) {
+                    g->vertices[currentTile][currentVertex]->y = 5;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex + 2) + 2 * (currentTile - 16);
+                }
+                else {
+                    g->vertices[currentTile][currentVertex]->y = 4;
+                    g->vertices[currentTile][currentVertex]->x = (currentVertex - 3) + 2 * (currentTile - 16);
+                }
+            }
+            currentVertex++;
+        }
+        currentTile++;
+    }
+>>>>>>> origin/master
 }
 void disposeGame(Game g) {
-	free(g);
+    free(g);
 }
 int getCampus(Game g, path pathToVertex) {
-	return 0;
+    return 0;
 }
 
 int getKPIpoints(Game g, int player) {
-	return g->pKPI[player];
+    return g->pKPI[player];
 }
 int getARCs(Game g, int player) {
-	return g->pARC[player];
+    return g->pARC[player];
 }
 int getG08s(Game g, int player) {
-	return g->pNumGO8[player];
+    return g->pNumGO8[player];
 }
 
 int getCampuses(Game g, int player) {
-	return g->pNumCampus[player];
+    return g->pNumCampus[player];
 }
 
 int getIPs(Game g, int player) {
-	return g->pNumIP[player];
+    return g->pNumIP[player];
 }
 
 int getPublications(Game g, int player) {
-	return g->pPublication[player];
+    return g->pPublication[player];
 }
 
 int getStudents(Game g, int player, int discipline) {
-	return g->pStudents[player][discipline];
+    return g->pStudents[player][discipline];
 }
 
 int getExchangeRate(Game g, int player, int disciplineFrom, int disciplineTo) {
-	return 0;
+    return 0;
 }
+
