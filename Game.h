@@ -73,6 +73,7 @@ typedef struct _region {
 	int y; //y coord
 	int diceValue; // dice value
 	int dicipline; // what dicipline is on the region
+	vertex v[6];
 } region;
 
 typedef struct _game * Game;
@@ -147,7 +148,7 @@ typedef struct _action {
 //   int dice[] = DEFAULT_DICE;
 //   Game g = newGame (disciplines, dice);
 Game newGame (int discipline[], int dice[]);
-Game makeGame();
+void makeGame();
 //void vertexSetToZeroZero(struct Vector2 *v);
 void createVertex(Game g);
 // free all the memory malloced for the game
