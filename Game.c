@@ -73,28 +73,6 @@ void visualiseGame(Game g) {
 typedef struct _game * Game;
 
 
-
-
-void createVertex(Game g) {
-	int counter = 0;
-	int vCount = 0;
-	int yCount = 1;
-	while (counter < NUM_REGIONS) {
-		vCount = 0;
-		while (vCount < 3) {
-			g->regions[counter].v->x = vCount;
-			g->regions[counter].v->y = 1;
-			vCount++;
-		}
-		while (vCount < 5) {
-			g->regions[counter].v->x = vCount;
-			g->regions[counter].v->y = 0;
-			vCount++;
-		}
-		
-	}
-}
-
 void createRegions(Game g) {
 	printf("Inside regions");
 	int xValue = 0;
@@ -237,5 +215,178 @@ int getStudents(Game g, int player, int discipline) {
 
 int getExchangeRate(Game g, int player, int disciplineFrom, int disciplineTo) {
     return 0;
+}
+
+void createVertex(Game g) {
+    int currentRegion = 0;
+    int vCount = 0;
+    int startOfRow = 0;
+    int regionCount = 0;
+    int currentRow = 0;
+    int endOfRow = 0;
+    int previousStartOfRow = 0;
+    int previousEndOfRow = 0;
+    while (currentRegion < NUM_REGIONS) {
+        if (currentRegion < 3) {
+            startOfRow = 0;
+            regionCount = 3;
+            currentRow = 0;
+            endOfRow = 2;
+        } else if (currentRegion < 7) {
+            startOfRow = 3;
+            regionCount = 7;
+            currentRow = 1;
+            endOfRow = 6;
+            previousStartOfRow = 0;
+            previousEndOfRow = 2;
+        } else if (currentRegion < 12) {
+            startOfRow = 7;
+            regionCount = 12;
+            currentRow = 2;
+            endOfRow = 11;
+            previousStartOfRow = 3;
+            previousEndOfRow = 6;
+        } else if (currentRegion < 16) {
+            startOfRow = 12;
+            regionCount = 16;
+            currentRow = 3;
+            endOfRow = 15;
+            previousStartOfRow = 7;
+            previousEndOfRow = 11;
+        } else if (currentRegion < 19) {
+            startOfRow = 16;
+            regionCount = 19;
+            currentRow = 4;
+            endOfRow = 18;
+            previousStartOfRow = 12;
+            previousEndOfRow = 15;
+        }
+        vCount = 0;
+        if (currentRegion == startOfRow) {
+            if (currentRow == 0) {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->x = vCount-currentRow;
+                    g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->x = (5 - vCount)-currentRow;
+                    g->regions[currentRegion].v[vCount]->y = currentRow;
+                    vCount++;
+                }
+            } else if (currentRow < 3) {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->x = vCount - currentRow;
+                    g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    if (vCount == 5) {
+                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount]->x = (5 - vCount)-currentRow;
+                        g->regions[currentRegion].v[vCount]->y = currentRow;
+                        vCount++;
+                    } else {
+                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[4 - vCount];
+                    }
+                    vCount++;
+                }
+            } else {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->x = vCount - (4 -currentRow);
+                    g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    if (vCount == 3) {
+                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount]->x = (5 - vCount)-(4-currentRow);
+                        g->regions[currentRegion].v[vCount]->y = currentRow;
+                        vCount++;
+                    } else {
+                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[6 - vCount];
+                        vCount++;
+                    }
+                }
+            }
+        } else if (currentRegion < regionCount) {
+            if (currentRow == 0) {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->y = 1;
+                    g->regions[currentRegion].v[vCount]->x = 2*currentRegion+vCount;
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount]->y = 0;
+                    g->regions[currentRegion].v[vCount]->x = 2*currentRegion+(5-vCount);
+                    vCount++;
+                }
+            } else if (currentRegion != endOfRow) {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    if (vCount == 0) {
+                        g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount + 2];
+                    } else if (currentRow < 3) {
+                        g->regions[currentRegion].v[vCount]->x = (((2*(currentRegion - startOfRow))+1)+(vCount - 1))-currentRow;
+                        g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    } else {
+                        g->regions[currentRegion].v[vCount]->x = (((2*(currentRegion - startOfRow))+1)+(vCount - 1))-(4 -currentRow);
+                        g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    }
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    if (vCount == 5) {
+                        g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount - 2];
+                    } else if(currentRow < 3){
+                        g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow+(currentRegion-startOfRow)].v[4 - vCount];
+                    } else {
+                        g->regions[currentRegion].v[vCount] = g->regions[(previousStartOfRow+(currentRegion-startOfRow))+1].v[4 - vCount];
+                    }
+                    vCount++;
+                }
+            } else {
+                while (vCount < 3) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    if (vCount == 0) {
+                        g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount + 2];
+                    } else if (currentRow < 3) {
+                        g->regions[currentRegion].v[vCount]->x = (((2*(currentRegion - startOfRow))+1)+(vCount - 1))-currentRow;
+                        g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    } else {
+                        g->regions[currentRegion].v[vCount]->x = (((2*(currentRegion - startOfRow))+1)+(vCount - 1))-(4 -currentRow);
+                        g->regions[currentRegion].v[vCount]->y = currentRow + 1;
+                    }
+                    vCount++;
+                }
+                while (vCount < 6) {
+                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    if (vCount == 5) {
+                        g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount - 2];
+                    } else if ((vCount == 3)&&(currentRow < 3)) {
+                        g->regions[currentRegion].v[vCount]->x = (((2*(currentRegion - startOfRow))+1)+(4 - vCount))-currentRow;
+                        g->regions[currentRegion].v[vCount]->y = currentRow;
+                    } else if (vCount == 3) {
+                        g->regions[currentRegion].v[vCount] = g->regions[previousEndOfRow].v[1];
+                    } else if (currentRow < 3){
+                        g->regions[currentRegion].v[vCount] = g->regions[previousEndOfRow].v[2];
+                    } else {
+                        g->regions[currentRegion].v[vCount] = g->regions[previousEndOfRow].v[0];
+                    }
+                    vCount++;
+                }
+            }
+        }
+        currentRegion++;
+    }
 }
 
