@@ -64,16 +64,16 @@
 #define FALSE 0
 
 typedef struct _vector {
-	int x;
-	int y;
+    int x;
+    int y;
 } vertex; //A Vector struct for storing coordinates
 
 typedef struct _region {
-	int x; //x coord
-	int y; //y coord
-	int diceValue; // dice value
-	int dicipline; // what dicipline is on the region
-	vertex v[6];
+    int x; //x coord
+    int y; //y coord
+    int diceValue; // dice value
+    int dicipline; // what dicipline is on the region
+    vertex *v[6];
 } region;
 
 typedef struct _game * Game;
