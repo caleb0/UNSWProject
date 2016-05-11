@@ -6,180 +6,182 @@
 #define NUM_STUDENT 6
 void createVertex(Game g);
 void visualiseGame(Game g);
-void createRegions(Game g);
-
+void createRegions(Game g);\
 
 int main(int argc, char* argv[]) {
-	printf("Started\n");
-	makeGame();
-	return EXIT_SUCCESS;
+    printf("Started\n");
+    makeGame();
+    return EXIT_SUCCESS;
 }
 
 struct _game {
     //Region information
-	region regions[NUM_REGIONS]; // create a region for each region
+    region regions[NUM_REGIONS]; // create a region for each region
     
     //Vertex information
- //Creates 6 vertex pointers for each region
+    //Creates 6 vertex pointers for each region
     
     //Global information
     int diceResult; //Result of a dice roll
     int whoseTurn; //Int of which player's turn it is
     int turnNumber; //Turn number counter
     
-    //Player information
-    int pKPI[NUM_UNIS]; //Have a value of KPI for each uni/player
-    int pNumCampus[NUM_UNIS]; //Value of campuses for each player
-    int pNumGO8[NUM_UNIS]; //Value of GO8s for each player
-    int pNumIP[NUM_UNIS]; //Value of IPs for each player
-    int pStudents[NUM_UNIS][NUM_STUDENT]; //Value of student types for each player
-    int pPublication[NUM_UNIS]; //Value of publications for each player
-    int pARC[NUM_UNIS]; //Value for ARCS for each player
+    player pPlayer[NUM_UNIS]//Player information
     
     //Leaderboard information
-    int topKPI; //Stores the top KPI value
     int topPublication; //Stores the top publication value
+    int topARC; //Stores which player has the most ARC grants
 } game;
 
 void makeGame() {
-	printf("About to allocate a new game\n");
-	Game g = malloc(sizeof(struct _game));//malloc memory for the whole game
-	assert(g != NULL);
-	printf("Game is not null\n");
-	g->whoseTurn = -1; //terra nullis turn
-	g->topKPI = NO_ONE;
-	g->topPublication = NO_ONE;
-	printf("foo\n");
-	createVertex(g);
-	printf("Made a new game\n");
-	createRegions(g);
-	printf("Created regions\n");
-	visualiseGame(g);
-	//return g;
+    printf("About to allocate a new game\n");
+    Game g = malloc(sizeof(struct _game));//malloc memory for the whole game
+    assert(g != NULL);
+    printf("Game is not null\n");
+    g->whoseTurn = -1; //terra nullis turn
+    g->topARC = NO_ONE;
+    g->topPublication = NO_ONE;
+    printf("foo\n");
+    createVertex(g);
+    printf("Made a new game\n");
+    createRegions(g);
+    printf("Created regions\n");
+    visualiseGame(g);
+    //return g;
 }
 
 void visualiseGame(Game g) {
-	int i = 0;
-	int a = 0;
-	for (i = 0; i < NUM_REGIONS; i++) {
-		printf("\n\nTile no %d, coordinate: %d, %d\n\n", i, g->regions[i].x, g->regions[i].y);
-		for (a = 0; a < 6; a++) {
-			printf("Vertex (%d, %d) is x: %d, y: %d\n", i, a, g->regions[i].v->x, g->regions[i].v->y);
-		}
-	}
-
-};
+    int i = 0;
+    int a = 0;
+    for (i = 0; i < NUM_REGIONS; i++) {
+        printf("\n\nTile no %d, coordinate: %d, %d\n\n", i, g->regions[i].x, g->regions[i].y);
+        for (a = 0; a < 6; a++) {
+            printf("Vertex (%d, %d) is x: %d, y: %d\n", i, a, g->regions[i].v[a]->x, g->regions[i].v[a]->y);
+        }
+    }
+    
+}
 
 typedef struct _game * Game;
 
 
 void createRegions(Game g) {
-	printf("Inside regions");
-	int xValue = 0;
-	int tileID = 0;
-	while (xValue < 3) {
-		g->regions[tileID].y = 0;
-		g->regions[tileID].x = xValue;
-		xValue++;
-		tileID++;
-	}
-	xValue = 0;
-	while (xValue < 4) {
-		g->regions[tileID].y = 1;
-		g->regions[tileID].x = xValue;
-		xValue++;
-		tileID++;
-	}
-	xValue = 0;
-	while (xValue < 5) {
-		g->regions[tileID].y = 2;
-		g->regions[tileID].x = xValue;
-		xValue++;
-		tileID++;
-	}
-	xValue = 1;
-	while (xValue < 5) {
-		g->regions[tileID].y = 3;
-		g->regions[tileID].x = xValue;
-		xValue++;
-		tileID++;
-	}
-	xValue = 2;
-	while (xValue < 5) {
-		g->regions[tileID].y = 4;
-		g->regions[tileID].x = xValue;
-		xValue++;
-		tileID++;
-	}
-
+    printf("Inside regions");
+    int xValue = 0;
+    int tileID = 0;
+    while (xValue < 3) {
+        g->regions[tileID].y = 0;
+        g->regions[tileID].x = xValue;
+        xValue++;
+        tileID++;
+    }
+    xValue = 0;
+    while (xValue < 4) {
+        g->regions[tileID].y = 1;
+        g->regions[tileID].x = xValue;
+        xValue++;
+        tileID++;
+    }
+    xValue = 0;
+    while (xValue < 5) {
+        g->regions[tileID].y = 2;
+        g->regions[tileID].x = xValue;
+        xValue++;
+        tileID++;
+    }
+    xValue = 1;
+    while (xValue < 5) {
+        g->regions[tileID].y = 3;
+        g->regions[tileID].x = xValue;
+        xValue++;
+        tileID++;
+    }
+    xValue = 2;
+    while (xValue < 5) {
+        g->regions[tileID].y = 4;
+        g->regions[tileID].x = xValue;
+        xValue++;
+        tileID++;
+    }
+    
 }
-/*void createVertex(Game g) {
-	int currentTile = 0;
-	int currentVertex;
-	while (currentTile < NUM_REGIONS) {
-		currentVertex = 0;
-		while (currentVertex < 6) {
-			if (currentTile < 3) {
-				if (currentVertex < 3) {
-					g->vertices[currentTile][currentVertex].y = 1;
-					g->vertices[currentTile][currentVertex].x = (currentVertex + 2) + 2 * currentTile;
-				}
-				else {
-					g->vertices[currentTile][currentVertex].y = 0;
-					g->vertices[currentTile][currentVertex].x = (currentVertex - 3) + 2 * currentTile;
-				}
-			}
-			else if (currentTile < 7) {
-				if (currentVertex < 3) {
-					g->vertices[currentTile][currentVertex].y = 2;
-					g->vertices[currentTile][currentVertex].x = (currentVertex + 1) + 2 * (currentTile - 3);
-				}
-				else {
-					g->vertices[currentTile][currentVertex].y = 1;
-					g->vertices[currentTile][currentVertex].x = (currentVertex - 4) + 2 * (currentTile - 3);
-				}
-			}
-			else if (currentTile < 12) {
-				if (currentVertex < 3) {
-					g->vertices[currentTile][currentVertex].y = 3;
-					g->vertices[currentTile][currentVertex].x = currentVertex + 2 * (currentTile - 7);
-				}
-				else {
-					g->vertices[currentTile][currentVertex].y = 2;
-					g->vertices[currentTile][currentVertex].x = (currentVertex - 5) + 2 * (currentTile - 7);
-				}
-			}
-			else if (currentTile < 16) {
-				if (currentVertex < 3) {
-					g->vertices[currentTile][currentVertex].y = 4;
-					g->vertices[currentTile][currentVertex].x = (currentVertex + 1) + 2 * (currentTile - 12);
-				}
-				else {
-					g->vertices[currentTile][currentVertex].y = 3;
-					g->vertices[currentTile][currentVertex].x = (currentVertex - 4) + 2 * (currentTile - 12);
-				}
-			}
-			else if (currentTile < 19) {
-				if (currentVertex < 3) {
-					g->vertices[currentTile][currentVertex].y = 5;
-					g->vertices[currentTile][currentVertex].x = (currentVertex + 2) + 2 * (currentTile - 16);
-				}
-				else {
-					g->vertices[currentTile][currentVertex].y = 4;
-					g->vertices[currentTile][currentVertex].x = (currentVertex - 3) + 2 * (currentTile - 16);
-				}
 
-			}
-			currentVertex++;
 
-		}
-		currentTile++;
-	}
+void makeAction(Game g, action a){
+    //check if legal action
+    if (a.actionCode == PASS){
+        //do nothing
+        //add 1 to turn
+    } else if (a.actionCode == BUILD_CAMPUS){
+        //assign student to vertex campus
+    } else if (a.actionCode == BUILD_GO8){
+
+    } else if (a.actionCode == OBTAIN_ARC){
+
+    } else if (a.actionCode == START_SPINOFF){
+        //generate number between 1 and 3
+        //if number == 1 -> change action code to OB_IP
+        //else -> change action code to OB_PUB
+    } else if (a.actionCode == OBTAIN_PUBLICATION){
+        //increases players publication by 1
+        //check who has highest publication amount
+    } else if (a.actionCode == OBTAIN_IP_PATENT){
+        //increase players ip count by 1
+        //each ip = 10 KPI
+    } else if (a.actionCode == RETRAIN_STUDENTS){
+        // g->p
+    }
+}
+
+
+//playercounter starts off at 0
+//increases on every turn
+//playercounter % 3 + 1 == curentplayer
+/*legal acitino (game g, action a){
+    destination =  convertPath2Pos(action a);
+if (a.actionCode == PASS){
+    return true
+} else if (BUILD_CAMPUS){
+    check if students > campus requirements
+    return true
+    else return false
+} else if (BUILD_G08){
+    check if destination.info == currentplayer
+    check if currentplayer has enough students
+    return true
+    else 
+    return false
+} else if (OBTAIN_ARC){
+    
+} else if (RETRAIN){
+    get exchange rate
+    see if player has enough of fromdicipline
+    return true
+    else 
+    return false
+}
+    }
+
+*/
+
+static void parsePath(action a){
+    /* vertex that starts at (5, 6)
+    //int i = 0
+    //if a.actionCode == OBTAIN_ARC{
+        paseArc(action a)
+} else {}
+    /*while (action.destionation[i] != \0){
+        if (action.destination[i] == 'L'){
+            x -= 1
+        } else if (action.destination[i] == 'R'){
+            x += 1
+        } else if (action.destination[i] == 'B'){
+            y -= 1
+        }
+    }
 }*/
 
-
-
-
+}
 void disposeGame(Game g) {
     free(g);
 }
@@ -188,7 +190,7 @@ int getCampus(Game g, path pathToVertex) {
 }
 
 int getKPIpoints(Game g, int player) {
-    return g->pKPI[player];
+    return g->pPlayer[player].pKPI;
 }
 int getARCs(Game g, int player) {
     return g->pARC[player];
@@ -265,51 +267,51 @@ void createVertex(Game g) {
         if (currentRegion == startOfRow) {
             if (currentRow == 0) {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->x = vCount-currentRow;
                     g->regions[currentRegion].v[vCount]->y = currentRow + 1;
                     vCount++;
                 }
                 while (vCount < 6) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->x = (5 - vCount)-currentRow;
                     g->regions[currentRegion].v[vCount]->y = currentRow;
                     vCount++;
                 }
             } else if (currentRow < 3) {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->x = vCount - currentRow;
                     g->regions[currentRegion].v[vCount]->y = currentRow + 1;
                     vCount++;
                 }
                 while (vCount < 6) {
                     if (vCount == 5) {
-                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                         g->regions[currentRegion].v[vCount]->x = (5 - vCount)-currentRow;
                         g->regions[currentRegion].v[vCount]->y = currentRow;
                         vCount++;
                     } else {
-                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                         g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[4 - vCount];
                     }
                     vCount++;
                 }
             } else {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->x = vCount - (4 -currentRow);
                     g->regions[currentRegion].v[vCount]->y = currentRow + 1;
                     vCount++;
                 }
                 while (vCount < 6) {
                     if (vCount == 3) {
-                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                         g->regions[currentRegion].v[vCount]->x = (5 - vCount)-(4-currentRow);
                         g->regions[currentRegion].v[vCount]->y = currentRow;
                         vCount++;
                     } else {
-                        g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                        g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                         g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[6 - vCount];
                         vCount++;
                     }
@@ -318,20 +320,20 @@ void createVertex(Game g) {
         } else if (currentRegion < regionCount) {
             if (currentRow == 0) {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->y = 1;
                     g->regions[currentRegion].v[vCount]->x = 2*currentRegion+vCount;
                     vCount++;
                 }
                 while (vCount < 6) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     g->regions[currentRegion].v[vCount]->y = 0;
                     g->regions[currentRegion].v[vCount]->x = 2*currentRegion+(5-vCount);
                     vCount++;
                 }
             } else if (currentRegion != endOfRow) {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     if (vCount == 0) {
                         g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount + 2];
                     } else if (currentRow < 3) {
@@ -344,7 +346,7 @@ void createVertex(Game g) {
                     vCount++;
                 }
                 while (vCount < 6) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     if (vCount == 5) {
                         g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount - 2];
                     } else if(currentRow < 3){
@@ -356,7 +358,7 @@ void createVertex(Game g) {
                 }
             } else {
                 while (vCount < 3) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     if (vCount == 0) {
                         g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount + 2];
                     } else if (currentRow < 3) {
@@ -369,7 +371,7 @@ void createVertex(Game g) {
                     vCount++;
                 }
                 while (vCount < 6) {
-                    g->regions[currentRegion].v[vCount] = malloc(2*(sizeof(int)));
+                    g->regions[currentRegion].v[vCount] = malloc(3*(sizeof(int)));
                     if (vCount == 5) {
                         g->regions[currentRegion].v[vCount] = g->regions[currentRegion -1].v[vCount - 2];
                     } else if ((vCount == 3)&&(currentRow < 3)) {
@@ -389,4 +391,3 @@ void createVertex(Game g) {
         currentRegion++;
     }
 }
-
