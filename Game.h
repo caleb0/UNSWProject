@@ -17,7 +17,6 @@
  */
 
 #define NUM_UNIS 3
-
 // player ID of each university
 #define NO_ONE 0
 #define UNI_A 1
@@ -63,10 +62,23 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef struct _vector {
+typedef struct _retrainingCentre {
+    vertex *v1;
+    vertex *v2;
+    int studentType; // 
+} retrainingCentre;
+
+typedef struct _vertex {
     int x;
     int y;
+    int info;// See defines above
 } vertex; //A Vector struct for storing coordinates
+
+typedef struct _arc {
+    vertex *v1;
+    vertex *v2;
+    int info; // See defines above
+} arc;
 
 typedef struct _region {
     int x; //x coord
@@ -75,6 +87,16 @@ typedef struct _region {
     int dicipline; // what dicipline is on the region
     vertex *v[6];
 } region;
+
+typedef struct _player {
+int pKPI; //Have a value of KPI for each uni/player
+    int pNumCampus; //Value of campuses for each player
+    int pNumGO8; //Value of GO8s for each player
+    int pNumIP; //Value of IPs for each player
+    int pStudents[NUM_STUDENT]; //Value of student types for each player
+    int pPublication; //Value of publications for each player
+    int pARC;
+}player;
 
 typedef struct _game * Game;
 
