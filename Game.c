@@ -183,6 +183,18 @@ static void parsePath(action a){
 
 }
 void disposeGame(Game g) {
+    // frees the memory pointed to by g
+    int currentRegion = 0;
+    int vCount;
+    while (currentRegion < NUM_REGIONS) {
+        vCount = 0;
+        while (vCount < 6) {
+            free(g->regions[currentRegion].v[vCount])
+            vCount++;
+        }
+        currentRegion++;
+    }
+    //frees g
     free(g);
 }
 int getCampus(Game g, path pathToVertex) {
