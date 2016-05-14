@@ -205,26 +205,26 @@ int getKPIpoints(Game g, int player) {
     return g->pPlayer[player].pKPI;
 }
 int getARCs(Game g, int player) {
-    return g->pARC[player];
+    return g->pPlayer[player].pARC;
 }
 int getG08s(Game g, int player) {
-    return g->pNumGO8[player];
+    return g->pPlayer[player].pNumGO8;
 }
 
 int getCampuses(Game g, int player) {
-    return g->pNumCampus[player];
+    return g->pPlayer[player].pNumCampus;
 }
 
 int getIPs(Game g, int player) {
-    return g->pNumIP[player];
+    return g->pPlayer[player].pNumIP;
 }
 
 int getPublications(Game g, int player) {
-    return g->pPublication[player];
+    return g->pPlayer[player].pPublication;
 }
 
 int getStudents(Game g, int player, int discipline) {
-    return g->pStudents[player][discipline];
+    return g->pPlayer[player].pStudents[discipline];
 }
 
 int getExchangeRate(Game g, int player, int disciplineFrom, int disciplineTo) {
