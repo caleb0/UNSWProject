@@ -1,20 +1,20 @@
 /*
- *  Game.h
- *  1917 v1.07
- *   edit log -
- *    1.07 badly-drawn map region and dice values comment
- *    1.06 expanded comments on newGame(), explain regionID
- *    1.05 expanded the comments explaining isLegalAction()
- *    1.04 expanded path description, starting direction
- *    1.03 edited comment for getmostpubs() 30-apr-14
- *    1.02 abstract ADT version of Game
- *    1.00 concrete game type version
- *  Do not alter this file
- *
- *  Created by Richard Buckland on 20/04/14.
- *  Licensed under Creative Commons SA-BY-NC 3.0.
- *
- */
+*  Game.h
+*  1917 v1.07
+*   edit log -
+*    1.07 badly-drawn map region and dice values comment
+*    1.06 expanded comments on newGame(), explain regionID
+*    1.05 expanded the comments explaining isLegalAction()
+*    1.04 expanded path description, starting direction
+*    1.03 edited comment for getmostpubs() 30-apr-14
+*    1.02 abstract ADT version of Game
+*    1.00 concrete game type version
+*  Do not alter this file
+*
+*  Created by Richard Buckland on 20/04/14.
+*  Licensed under Creative Commons SA-BY-NC 3.0.
+*
+*/
 
 #define NUM_UNIS 3
 // player ID of each university
@@ -62,41 +62,7 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef struct _retrainingCentre {
-    vertex *v1;
-    vertex *v2;
-    int studentType; // 
-} retrainingCentre;
 
-typedef struct _vertex {
-    int x;
-    int y;
-    int info;// See defines above
-} vertex; //A Vector struct for storing coordinates
-
-typedef struct _arc {
-    vertex *v1;
-    vertex *v2;
-    int info; // See defines above
-} arc;
-
-typedef struct _region {
-    int x; //x coord
-    int y; //y coord
-    int diceValue; // dice value
-    int dicipline; // what dicipline is on the region
-    vertex *v[6];
-} region;
-
-typedef struct _player {
-int pKPI; //Have a value of KPI for each uni/player
-    int pNumCampus; //Value of campuses for each player
-    int pNumGO8; //Value of GO8s for each player
-    int pNumIP; //Value of IPs for each player
-    int pStudents[NUM_STUDENT]; //Value of student types for each player
-    int pPublication; //Value of publications for each player
-    int pARC;
-}player;
 
 typedef struct _game * Game;
 
@@ -136,12 +102,12 @@ typedef char path[PATH_LIMIT];
 // return PASS at which time you'll throw the dice (using
 // throwDice()) and advance the game to the next player.  And repeat.
 typedef struct _action {
-    int actionCode;  // see #defines above
-    path destination; // if the action operates on a vertex or ARC this
-    // specifies *which* vertex or path.  unused
-    // otherwise
-    int disciplineFrom;  // used for the retrain students action
-    int disciplineTo;    // used for the retrain students action
+	int actionCode;  // see #defines above
+	path destination; // if the action operates on a vertex or ARC this
+					  // specifies *which* vertex or path.  unused
+					  // otherwise
+	int disciplineFrom;  // used for the retrain students action
+	int disciplineTo;    // used for the retrain students action
 } action;
 
 /* **** Functions which change the game aka SETTERS **** */
@@ -158,62 +124,59 @@ typedef struct _action {
 // so to create the default game as shown on the badly drawn map:
 //
 /*
- #define DEFAULT_DISCIPLINES {STUDENT_BQN, STUDENT_MMONEY, STUDENT_MJ, \
- STUDENT_MMONEY, STUDENT_MJ, STUDENT_BPS, STUDENT_MTV, \
- STUDENT_MTV, STUDENT_BPS,STUDENT_MTV, STUDENT_BQN, \
- STUDENT_MJ, STUDENT_BQN, STUDENT_THD, STUDENT_MJ, \
- STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
- #define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
- */
+#define DEFAULT_DISCIPLINES {STUDENT_BQN, STUDENT_MMONEY, STUDENT_MJ, \
+STUDENT_MMONEY, STUDENT_MJ, STUDENT_BPS, STUDENT_MTV, \
+STUDENT_MTV, STUDENT_BPS,STUDENT_MTV, STUDENT_BQN, \
+STUDENT_MJ, STUDENT_BQN, STUDENT_THD, STUDENT_MJ, \
+STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
+#define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
+*/
 //
 //   int disciplines[] = DEFAULT_DISCIPLINES;
 //   int dice[] = DEFAULT_DICE;
 //   Game g = newGame (disciplines, dice);
-Game newGame (int discipline[], int dice[]);
-void makeGame();
-//void vertexSetToZeroZero(struct Vector2 *v);
-void createVertex(Game g);
+Game newGame(int discipline[], int dice[]);
 // free all the memory malloced for the game
-void disposeGame (Game g);
+void disposeGame(Game g);
 
 // make the specified action for the current player and update the
 // game state accordingly.
 // The function may assume that the action requested is legal.
 // START_SPINOFF is not a legal action here
-void makeAction (Game g, action a);
+void makeAction(Game g, action a);
 
 // advance the game to the next turn,
 // assuming that the dice has just been rolled and produced diceScore
 // the game starts in turn -1 (we call this state "Terra Nullis") and
 // moves to turn 0 as soon as the first dice is thrown.
-void throwDice (Game g, int diceScore);
+void throwDice(Game g, int diceScore);
 
 /* **** Functions which GET data about the game aka GETTERS **** */
 
 // what type of students are produced by the specified region?
 // regionID is the index of the region in the newGame arrays (above)
 // see discipline codes above
-int getDiscipline (Game g, int regionID);
+int getDiscipline(Game g, int regionID);
 
 // what dice value produces students in the specified region?
 // 2..12
-int getDiceValue (Game g, int regionID);
+int getDiceValue(Game g, int regionID);
 
 // which university currently has the prestige award for the most ARCs?
 // this is NO_ONE until the first arc is purchased after the game
 // has started.
-int getMostARCs (Game g);
+int getMostARCs(Game g);
 
 // which university currently has the prestige award for the most pubs?
 // this is NO_ONE until the first publication is made.
-int getMostPublications (Game g);
+int getMostPublications(Game g);
 
 // return the current turn number of the game -1,0,1, ..
-int getTurnNumber (Game g);
+int getTurnNumber(Game g);
 
 // return the player id of the player whose turn it is
 // the result of this function is NO_ONE during Terra Nullis
-int getWhoseTurn (Game g);
+int getWhoseTurn(Game g);
 
 // return the contents of the given vertex (ie campus code or
 // VACANT_VERTEX)
@@ -247,35 +210,35 @@ int getARC(Game g, path pathToEdge);
 // It is not legal for a player to make the moves OBTAIN_PUBLICATION
 // or OBTAIN_IP_PATENT (they can make the move START_SPINOFF)
 // you can assume that any pths passed in are NULL terminated strings.
-int isLegalAction (Game g, action a);
+int isLegalAction(Game g, action a);
 
 // --- get data about a specified player ---
 
 // return the number of KPI points the specified player currently has
-int getKPIpoints (Game g, int player);
+int getKPIpoints(Game g, int player);
 
 // return the number of ARC grants the specified player currently has
-int getARCs (Game g, int player);
+int getARCs(Game g, int player);
 
 // return the number of GO8 campuses the specified player currently has
-int getGO8s (Game g, int player);
+int getGO8s(Game g, int player);
 
 // return the number of normal Campuses the specified player currently has
-int getCampuses (Game g, int player);
+int getCampuses(Game g, int player);
 
 // return the number of IP Patents the specified player currently has
-int getIPs (Game g, int player);
+int getIPs(Game g, int player);
 
 // return the number of Publications the specified player currently has
-int getPublications (Game g, int player);
+int getPublications(Game g, int player);
 
 // return the number of students of the specified discipline type
 // the specified player currently has
-int getStudents (Game g, int player, int discipline);
+int getStudents(Game g, int player, int discipline);
 
 // return how many students of discipline type disciplineFrom
 // the specified player would need to retrain in order to get one
 // student of discipline type disciplineTo.  This will depend
 // on what retraining centers, if any, they have a campus at.
-int getExchangeRate (Game g, int player,
-                     int disciplineFrom, int disciplineTo);
+int getExchangeRate(Game g, int player,
+	int disciplineFrom, int disciplineTo);
