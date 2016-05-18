@@ -253,7 +253,7 @@ int getKPIpoints(Game g, int player) {
 int getARCs(Game g, int player) {
 	return g->Players[player].pARC;
 }
-int getG08s(Game g, int player) {
+int getGO8s(Game g, int player) {
 	return g->Players[player].pNumGO8;
 }
 
