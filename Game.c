@@ -232,47 +232,19 @@ return;
 }
 */
 
-
-vertex* findNextVertex(vertex* currentv, int heading, char direction){
-    if (direction == 'L'){
-        if(heading == NORTH_EAST){
-            currentv->y++;
-        } else if (heading == )
-    }
-}
-
-int findIndex(int array[], int value, int size){
-    int index = 0;
-    while (index < size && array[index] != value){
-        index++;
-    }
-    return (index == size ? -1 : index);
-}
-
 arc *pathtoArc (Game g, action a) {
+    arc *newArc;
+    vertex *end;
+    vertex *prev;
     int heading = SOUTH_EAST;
     int x = 5;
     int y = 6;
+    int prevX;
+    int prevY;
     int counter = 0;
+    //gives point at end of path
     while (a.destination[counter] != '\0') {
-        char currentChar = a.destination[counter];
-        int HEADINGS[6] = [NORTH_WEST, NORTH_EAST, EAST, SOUTH_EAST, SOUTH_WEST, WEST];
-        int headingIndex = findIndex(HEADINGS, heading, 6);
-
-        if currentChar == 'L' {
-            headingIndex = (headingIndex - 1) % 6;
-        } else {
-            headingIndex = (headingIndex + 1) % 6;
-        } else {
-            headingIndex = (headingIndex + 3) % 6;
-        }
-
-        if heading == NE {
-            new coord = x + 1, y + 1 
-        }
-
-
-
+        //change x,y
         if (heading == NORTH_EAST) {
             if (a.destination[counter] == 'L') {
                 y++;
@@ -280,20 +252,101 @@ arc *pathtoArc (Game g, action a) {
                 x++;
             } else if (a.destination[counter] == 'B') {
                 x--;
-            } else {
-                asssert(false);
+            }
+        } else if (heading == EAST) {
+            if (a.destination[counter] == 'L') {
+                x++;
+            } else if (a.destination[counter] == 'R') {
+                y--;
+            } else if (a.destination[counter] == 'B') {
+                x--;
+            }
+        } else if (heading == SOUTH_EAST) {
+            if (a.destination[counter] == 'L') {
+                x++;
+            } else if (a.destination[counter] == 'R') {
+                x--;
+            } else if (a.destination[counter] == 'B') {
+                y++;
+            }
+        } else if (heading == SOUTH_WEST) {
+            if (a.destination[counter] == 'L') {
+                y--;
+            } else if (a.destination[counter] == 'R') {
+                x--;
+            } else if (a.destination[counter] == 'B') {
+                x++;
+            }
+        } else if (heading == WEST) {
+            if (a.destination[counter] == 'L') {
+                x--;
+            } else if (a.destination[counter] == 'R') {
+                y++;
+            } else if (a.destination[counter] == 'B') {
+                x++;
+            }
+        } else if (heading == NORTH_WEST) {
+            if (a.destination[counter] == 'L') {
+                x--;
+            } else if (a.destination[counter] == 'R') {
+                x++;
+            } else if (a.destination[counter] == 'B') {
+                y--;
             }
         }
+        //change heading
         if (a.destination[counter] == 'L') {
             if (heading != NORTH_EAST) {
                 heading--;
             } else {
                 heading = NORTH_WEST;
             }
+        } else if (a.destination[counter] == 'R') {
+            if (heading != NORTH_WEST) {
+                heading++;
+            } else {
+                heading = NORTH_EAST;
+            }
+        } else if (a.destination[counter] == 'B') {
+            if (heading <= SOUTH_EAST) {
+                heading = heading + 3;
+            } else {
+                heading = heading - 3;
+            }
         }
         counter++;
     }
+    prevX = x;
+    prevY = y;
+    if (heading <= SOUTH_EAST) {
+        heading = heading + 3;
+    } else {
+        heading = heading - 3;
+    }
+    if (heading == NORTH_EAST) {
+        prevX++;
+    } else if (heading == EAST) {
+        prevX++;
+    } else if (heading == SOUTH_EAST) {
+        prevY--;
+    } else if (heading == SOUTH_WEST) {
+        prevX--;
+    } else if (heading == WEST) {
+        prevX--;
+    } else if (heading == NORTH_WEST) {
+        prevY++;
+    }
+    newArc->info = 0;
+    end->x = x;
+    end->y = y;
+    prev->x = prevX;
+    prev->y = prevY;
+    newArc->v1 = end;
+    newArc->v2 = prev;
+    return newArc;
 }
+
+
 void disposeGame(Game g) {
     // frees the memory pointed to by g
     int currentRegion = 0;
