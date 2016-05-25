@@ -3,20 +3,14 @@
 #include <stdio.h>
 #include <assert.h>
 #define NUM_STUDENT 6
-void createVertex(Game g);
-void visualiseGame(Game g);
-void createRegions(Game g);
-void makeAction(Game g, action a);
-//static void parsePath(action a);
-
-#define DEFAULT_DISCIPLINES {STUDENT_BQN, STUDENT_MMONEY, STUDENT_MJ, \
-STUDENT_MMONEY, STUDENT_MJ, STUDENT_BPS, STUDENT_MTV, \
-STUDENT_MTV, STUDENT_BPS,STUDENT_MTV, STUDENT_BQN, \
-STUDENT_MJ, STUDENT_BQN, STUDENT_THD, STUDENT_MJ, \
-STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
-#define DEFAULT_DICE {9,10,8,12,6,5,3,11,3,11,4,6,4,7,9,2,8,10,5}
-
+#define NORTH_EAST 0
+#define EAST 1
+#define SOUTH_EAST 2
+#define SOUTH_WEST 3
+#define WEST 4
+#define NORTH_WEST 5
 typedef struct _game * Game;
+
 typedef struct _vertex {
     int x;
     int y;
@@ -66,17 +60,23 @@ struct _game {
     int topPublication; //Stores the top publication value
     int topARC; //Stores which player has the most ARC grants
 };
-/*
+void createVertex(Game g);
+void visualiseGame(Game g);
+void createRegions(Game g);
+void makeGame();
+void makeAction(Game g, action a);
+arc *pathtoArc (Game g, action a);
+vertex *pathToVertex(Game g, action a);
+vertex* getEndPointOfPath(Game g, action a);
+//static void parsePath(action a);
+
 int main(int argc, char* argv[]) {
     printf("Started\n");
-    int disciplines[] = DEFAULT_DISCIPLINES;
-    int dice[] = DEFAULT_DICE;
-    Game g = newGame (disciplines, dice);
-    disposeGame(g);
+    makeGame();
     return EXIT_SUCCESS;
 }
-*/
-Game newGame (int discipline[], int dice[]) {
+
+void makeGame() {
     printf("About to allocate a new game\n");
     Game g = malloc(sizeof(struct _game));//malloc memory for the whole game
     assert(g != NULL);
@@ -90,7 +90,7 @@ Game newGame (int discipline[], int dice[]) {
     createRegions(g);
     printf("Created regions\n");
     visualiseGame(g);
-    return g;
+    //return g;
 }
 
 void visualiseGame(Game g) {
@@ -212,26 +212,159 @@ void makeAction(Game g, action a) {
  }
  }
  */
-/*
-static void parsePath(action a) {
-    vertex that starts at (5, 6)
-    //int i = 0
-    //if a.actionCode == OBTAIN_ARC{
-    paseArc(action a)
-} else {}
-while (action.destionation[i] != \0){
-    if (action.destination[i] == 'L'){
-        x -= 1
-    } else if (action.destination[i] == 'R'){
-        x += 1
-    } else if (action.destination[i] == 'B'){
-        y -= 1
-    }
-}
-}
-return;
-}
+
+/*static void parsePath(action a) {
+ vertex that starts at (5, 6)
+ //int i = 0
+ //if a.actionCode == OBTAIN_ARC{
+ paseArc(action a)
+ } else {}
+ while (action.destionation[i] != \0){
+ if (action.destination[i] == 'L'){
+ x -= 1
+ } else if (action.destination[i] == 'R'){
+ x += 1
+ } else if (action.destination[i] == 'B'){
+ y -= 1
+ }
+ }
+ }
+ return;
+ }
  */
+
+arc *pathtoArc (Game g, action a) {
+    arc *newArc = malloc(sizeof(arc));
+    vertex *end;
+    vertex *prev = malloc(sizeof(vertex));
+    int prevX;
+    int prevY;
+    int heading;
+    
+    end = getEndPointOfPath (g, a);
+    
+    heading = end->info;
+    prevX = end->x;
+    prevY = end->y;
+    end->info = VACANT_VERTEX;
+    if (heading <= SOUTH_EAST) {
+        heading = heading + 3;
+    } else {
+        heading = heading - 3;
+    }
+    if (heading == NORTH_EAST) {
+        prevX++;
+    } else if (heading == EAST) {
+        prevX++;
+    } else if (heading == SOUTH_EAST) {
+        prevY--;
+    } else if (heading == SOUTH_WEST) {
+        prevX--;
+    } else if (heading == WEST) {
+        prevX--;
+    } else if (heading == NORTH_WEST) {
+        prevY++;
+    }
+    newArc->info = VACANT_ARC;
+    prev->x = prevX;
+    prev->y = prevY;
+    newArc->v1 = end;
+    newArc->v2 = prev;
+    return newArc;
+}
+
+vertex *pathToVertex (Game g, action a) {
+    vertex *endVertex;
+    endVertex = getEndPointOfPath (g, a);
+    endVertex->info = VACANT_VERTEX;
+    return endVertex;
+}
+
+vertex *getEndPointOfPath (Game g, action a) {
+    int counter = 0;
+    int heading = SOUTH_EAST;
+    int x = 5;
+    int y = 6;
+    while (a.destination[counter] != '\0') {
+        //change x,y
+        if (heading == NORTH_EAST) {
+            if (a.destination[counter] == 'L') {
+                y++;
+            } else if (a.destination[counter] == 'R') {
+                x++;
+            } else if (a.destination[counter] == 'B') {
+                x--;
+            }
+        } else if (heading == EAST) {
+            if (a.destination[counter] == 'L') {
+                x++;
+            } else if (a.destination[counter] == 'R') {
+                y--;
+            } else if (a.destination[counter] == 'B') {
+                x--;
+            }
+        } else if (heading == SOUTH_EAST) {
+            if (a.destination[counter] == 'L') {
+                x++;
+            } else if (a.destination[counter] == 'R') {
+                x--;
+            } else if (a.destination[counter] == 'B') {
+                y++;
+            }
+        } else if (heading == SOUTH_WEST) {
+            if (a.destination[counter] == 'L') {
+                y--;
+            } else if (a.destination[counter] == 'R') {
+                x--;
+            } else if (a.destination[counter] == 'B') {
+                x++;
+            }
+        } else if (heading == WEST) {
+            if (a.destination[counter] == 'L') {
+                x--;
+            } else if (a.destination[counter] == 'R') {
+                y++;
+            } else if (a.destination[counter] == 'B') {
+                x++;
+            }
+        } else if (heading == NORTH_WEST) {
+            if (a.destination[counter] == 'L') {
+                x--;
+            } else if (a.destination[counter] == 'R') {
+                x++;
+            } else if (a.destination[counter] == 'B') {
+                y--;
+            }
+        }
+        //change heading
+        if (a.destination[counter] == 'L') {
+            if (heading != NORTH_EAST) {
+                heading--;
+            } else {
+                heading = NORTH_WEST;
+            }
+        } else if (a.destination[counter] == 'R') {
+            if (heading != NORTH_WEST) {
+                heading++;
+            } else {
+                heading = NORTH_EAST;
+            }
+        } else if (a.destination[counter] == 'B') {
+            if (heading <= SOUTH_EAST) {
+                heading = heading + 3;
+            } else {
+                heading = heading - 3;
+            }
+        }
+        counter++;
+    }
+    vertex *endVertex = malloc(sizeof(vertex));
+    endVertex->x = x;
+    endVertex->y = y;
+    endVertex->info = heading;
+    return endVertex;
+}
+
 void disposeGame(Game g) {
     // frees the memory pointed to by g
     int currentRegion = 0;
@@ -349,7 +482,6 @@ int isLegalAction (Game g, action a) {
     return 1;
 }
 
-
 void createVertex(Game g) {
     int currentRegion = 0;
     int vCount = 0;
@@ -429,6 +561,7 @@ void createVertex(Game g) {
                         vCount++;
                     }
                     else {
+                        g->regions[currentRegion].v[vCount] = malloc(3 * (sizeof(int)));
                         g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[4 - vCount];
                     }
                     vCount++;
@@ -449,6 +582,7 @@ void createVertex(Game g) {
                         vCount++;
                     }
                     else {
+                        g->regions[currentRegion].v[vCount] = malloc(3 * (sizeof(int)));
                         g->regions[currentRegion].v[vCount] = g->regions[previousStartOfRow].v[6 - vCount];
                         vCount++;
                     }
