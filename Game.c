@@ -180,7 +180,65 @@ void makeAction(Game g, action a) {
         // g->p
     }
 }
+int isLegalAction(Game g, action a){
+    int turnNum = g->turnNumber;
+    
+    if (a.actionCode == PASS){
+        
+        return 1;
+    
+    } else if (a.actionCode == BUILD_CAMPUS){
+        
+        if (g->Players[turnNum].pStudents[STUDENT_BPS] >= 1 && g->Player[turnNum].pStudents[STUDENT_BQN] >= 1){
+            if (g->Player[turnNum].pStudents[STUDENT_MJ] >= 1 && g->Player[turnNum].pStudents[STUDENT_MTV] >= 1){
+                
+                vertex* campusLocation = pathToVertex(g, a);
+                
+                if (campusLocation->info == VACANT_VERTEX){
+                    return 1;
+                } else {
+                    return 0;
+                }
+                
+                
+            }
+        }
+    } else if (a.actionCode == BUILD_GO8){
+        vertex* GO8Location = pathToVertex(g, a);
+        if (GO8Location->info != turnNum || g->Player[turnNum].pGO8 >= 8){
+          return 0;
+        }
+        
+        if (g->Players[turnNum].pStudents[STUDENT_MJ] >= 2 && g->Players[turnNum].pStudents[STUDENT_MMONEY] >= 3){
+            return 1;
+        } else {
+            return 0;
+        }
+    } else if (a.actionCode == OBTAIN_ARC){
+        arc* ARCLocation = pathToArc(g, a);
+        if (arc == NULL || arc->info == VACANT_ARC){
+            return 0;
+        }
+        
+        if (g->Players[turnNum].pStudents[STUDENT_BQN] >= 1 && g->Players[turnNum].pStudents[STUDENT_BPS] >= 1){
+            return 1;
+        }
+        
+    } else if (a.actionCode == START_SPINOFF){
+        
+    }
+}
 
+int getRandomNumber(int range){
+    
+    return rand() % range;
+}
+
+int getWhoseTurn(Game g){
+    int playerTurn = (g.turnNumber % 3) + 1;
+    g->turnNumber++;
+    return (playerTurn);
+}
 
 //playercounter starts off at 0
 //increases on every turn
