@@ -68,6 +68,7 @@ void makeAction(Game g, action a);
 arc *pathtoArc (Game g, action a);
 vertex *pathToVertex(Game g, action a);
 vertex* getEndPointOfPath(Game g, action a);
+int isLegalAction(Game g, action a);
 //static void parsePath(action a);
 
 int main(int argc, char* argv[]) {
@@ -150,24 +151,39 @@ void createRegions(Game g) {
 
 
 void makeAction(Game g, action a) {
+    if (!isLegalAction(g, a)){
+        return;
+    }
     //check if legal action
-    if (a.actionCode == PASS) {
+    else if (a.actionCode == PASS) {
         //do nothing
         //add 1 to turn
+        g->turnNumber++;
     }
     else if (a.actionCode == BUILD_CAMPUS) {
         //assign student to vertex campus
+        vertex* p = pathToVertex(g, a);
+        p->info = ((g->turnNumber)%3)+1;
     }
     else if (a.actionCode == BUILD_GO8) {
-        
+        vertex *p = pathToVertex(g, a);
+        p->info = ((g->turnNumber)%3)+4;
     }
     else if (a.actionCode == OBTAIN_ARC) {
-        
+        arc *p = pathtoArc(g,a);
+        p->info = ((g->turnNumber)%3)+1;
     }
     else if (a.actionCode == START_SPINOFF) {
         //generate number between 1 and 3
         //if number == 1 -> change action code to OB_IP
         //else -> change action code to OB_PUB
+        int randNum = (rand() % 3) + 1;
+        if (randNum == 1) {
+            a.actionCode = OBTAIN_IP_PATENT;
+        } else {
+            a.actionCode = OBTAIN_PUBLICATION;
+        }
+        makeAction(g, a);
     }
     else if (a.actionCode == OBTAIN_PUBLICATION) {
         //increases players publication by 1
@@ -236,17 +252,39 @@ void makeAction(Game g, action a) {
 arc *pathtoArc (Game g, action a) {
     arc *newArc = malloc(sizeof(arc));
     vertex *end;
-    vertex *prev = malloc(sizeof(vertex));
+    vertex *prev;
     int prevX;
     int prevY;
     int heading;
     
     end = getEndPointOfPath (g, a);
     
-    heading = end->info;
+    int counter = 0;
+    //change heading
+    while (a.destination[counter] != '\0') {
+        if (a.destination[counter] == 'L') {
+            if (heading != NORTH_EAST) {
+                heading--;
+            } else {
+                heading = NORTH_WEST;
+            }
+        } else if (a.destination[counter] == 'R') {
+            if (heading != NORTH_WEST) {
+                heading++;
+            } else {
+                heading = NORTH_EAST;
+            }
+        } else if (a.destination[counter] == 'B') {
+            if (heading <= SOUTH_EAST) {
+                heading = heading + 3;
+            } else {
+                heading = heading - 3;
+            }
+        }
+    }
+
     prevX = end->x;
     prevY = end->y;
-    end->info = VACANT_VERTEX;
     if (heading <= SOUTH_EAST) {
         heading = heading + 3;
     } else {
@@ -266,8 +304,18 @@ arc *pathtoArc (Game g, action a) {
         prevY++;
     }
     newArc->info = VACANT_ARC;
-    prev->x = prevX;
-    prev->y = prevY;
+    
+    int i = 0;
+    int b = 0;
+    while ((g->regions[i].v[b]->y != end->y) && (g->regions[i].v[b]->x != end->x)) {
+        b = 0;
+        while (((b < 6) && ((g->regions[i].v[b]->y != end->y) && (g->regions[i].v[b]->x != end->x)))) {
+            b++;
+        }
+        i++;
+    }
+    prev = g->regions[i].v[b];
+
     newArc->v1 = end;
     newArc->v2 = prev;
     return newArc;
@@ -276,7 +324,6 @@ arc *pathtoArc (Game g, action a) {
 vertex *pathToVertex (Game g, action a) {
     vertex *endVertex;
     endVertex = getEndPointOfPath (g, a);
-    endVertex->info = VACANT_VERTEX;
     return endVertex;
 }
 
@@ -358,10 +405,19 @@ vertex *getEndPointOfPath (Game g, action a) {
         }
         counter++;
     }
-    vertex *endVertex = malloc(sizeof(vertex));
-    endVertex->x = x;
-    endVertex->y = y;
-    endVertex->info = heading;
+
+
+    vertex *endVertex;
+    int i = 0;
+    int b = 0;
+    while ((g->regions[i].v[b]->y != y) && (g->regions[i].v[b]->x != x)) {
+        b = 0;
+        while (((b < 6) && ((g->regions[i].v[b]->y != y) && (g->regions[i].v[b]->x != x)))) {
+            b++;
+        }
+        i++;
+    }
+    endVertex = g->regions[i].v[b];
     return endVertex;
 }
 
@@ -369,44 +425,10 @@ void disposeGame(Game g) {
     // frees the memory pointed to by g
     int currentRegion = 0;
     int vCount;
-    int startOfRow = 0;
-    int endOfRow = 0;
     while (currentRegion < NUM_REGIONS) {
-        if (currentRegion < 3) {
-            startOfRow = 0;
-            endOfRow = 2;
-        } else if (currentRegion < 7) {
-            startOfRow = 3;
-            endOfRow = 6;
-        } else if (currentRegion < 12) {
-            startOfRow = 7;
-            endOfRow = 11;
-        } else if (currentRegion < 16) {
-            startOfRow = 12;
-            endOfRow = 15;
-        } else if (currentRegion < 19) {
-            startOfRow = 16;
-            endOfRow = 18;
-        }
         vCount = 0;
         while (vCount < 6) {
-            if (currentRegion == 0) {
-                free(g->regions[currentRegion].v[vCount]);
-            } else if ((startOfRow == 0) && (vCount != 0) && (vCount != 5)) {
-                free(g->regions[currentRegion].v[vCount]);
-            } else if ((vCount < 3) && (vCount > 0)) {
-                free(g->regions[currentRegion].v[vCount]);
-            } else if (currentRegion == startOfRow) {
-                if (vCount == 0) {
-                    free(g->regions[currentRegion].v[vCount]);
-                } else if ((currentRegion < 12) && (vCount == 5)){
-                    free(g->regions[currentRegion].v[vCount]);
-                }
-            } else if ((currentRegion == endOfRow) && (currentRegion < 12)) {
-                if (vCount == 3) {
-                    free(g->regions[currentRegion].v[vCount]);
-                }
-            }
+            free(g->regions[currentRegion].v[vCount]);
             vCount++;
         }
         currentRegion++;
@@ -448,39 +470,10 @@ int getExchangeRate(Game g, int player, int disciplineFrom, int disciplineTo) {
     return 0;
 }
 
-int getWhoseTurn (Game g) {
-    return g->whoseTurn;
-}
-int getTurnNumber (Game g) {
-    return g->turnNumber;
-}
-
-int getDiscipline (Game g, int regionID) {
+int isLegalAction(Game g, action a) {
     return 1;
 }
 
-int getDiceValue (Game g, int regionID) {
-    return 1;
-}
-int getARC(Game g, path pathToEdge) {
-    return 1;
-}
-
-int getMostARCs (Game g) {
-    return g->topARC;
-}
-
-int getMostPublications (Game g) {
-    return g->topPublication;
-}
-
-void throwDice (Game g, int diceScore) {
-    
-}
-
-int isLegalAction (Game g, action a) {
-    return 1;
-}
 
 void createVertex(Game g) {
     int currentRegion = 0;
