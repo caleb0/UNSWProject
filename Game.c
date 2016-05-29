@@ -55,7 +55,6 @@ struct _game {
     player Players[NUM_UNIS];//Player information
     
     int diceResult; //Result of a dice roll
-    int whoseTurn; //Int of which player's turn it is
     int turnNumber; //Turn number counter
     int topPublication; //Stores the top publication value
     int topARC; //Stores which player has the most ARC grants
@@ -82,7 +81,7 @@ void makeGame() {
     Game g = malloc(sizeof(struct _game));//malloc memory for the whole game
     assert(g != NULL);
     printf("Game is not null\n");
-    g->whoseTurn = -1; //terra nullis turn
+    g->turnNumber = -1; //terra nullis turn
     g->topARC = NO_ONE;
     g->topPublication = NO_ONE;
     printf("foo\n");
@@ -187,10 +186,13 @@ void makeAction(Game g, action a) {
     }
     else if (a.actionCode == OBTAIN_PUBLICATION) {
         //increases players publication by 1
+        g->Players[(g->turnNumber%3)].pPublication++;
         //check who has highest publication amount
+        
     }
     else if (a.actionCode == OBTAIN_IP_PATENT) {
         //increase players ip count by 1
+        g->Players[(g->turnNumber%3)].pNumIP++;
         //each ip = 10 KPI
     }
     else if (a.actionCode == RETRAIN_STUDENTS) {
@@ -260,6 +262,7 @@ arc *pathtoArc (Game g, action a) {
     end = getEndPointOfPath (g, a);
     
     int counter = 0;
+    heading = SOUTH_EAST;
     //change heading
     while (a.destination[counter] != '\0') {
         if (a.destination[counter] == 'L') {
@@ -282,7 +285,7 @@ arc *pathtoArc (Game g, action a) {
             }
         }
     }
-
+    
     prevX = end->x;
     prevY = end->y;
     if (heading <= SOUTH_EAST) {
@@ -315,7 +318,7 @@ arc *pathtoArc (Game g, action a) {
         i++;
     }
     prev = g->regions[i].v[b];
-
+    
     newArc->v1 = end;
     newArc->v2 = prev;
     return newArc;
@@ -405,8 +408,8 @@ vertex *getEndPointOfPath (Game g, action a) {
         }
         counter++;
     }
-
-
+    
+    
     vertex *endVertex;
     int i = 0;
     int b = 0;
