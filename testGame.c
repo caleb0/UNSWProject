@@ -104,7 +104,7 @@ void testGame() {
 	while (counter < 10) {
 		throwDice(g, dice[i]);
 		assert(getTurnNumber(g) == (i));
-		assert((getWhoseTurn(g) <= UNI_C) && (getWhoseTurn(g) <= UNI_C)); //makes sure the turns are either of the 3 unis
+		assert((getWhoseTurn(g) >= UNI_A) && (getWhoseTurn(g) <= UNI_C)); //makes sure the turns are either of the 3 unis
 		assert(getWhoseTurn(g) == ((i % NUM_UNIS)+1));
 		counter++;
 	}
