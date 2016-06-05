@@ -19,7 +19,8 @@ STUDENT_MMONEY, STUDENT_MTV, STUDENT_BQN, STUDENT_BPS}
 typedef struct _vector {
 	double x;
 	double y;
-}Vector2; //A Vector struct for storing coordinates
+}Vector2; //A Vector struct for storing coordinates'
+
 
 typedef struct _game {
 	//Region information
