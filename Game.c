@@ -70,6 +70,7 @@ vertex* getEndPointOfPath(Game g, action a);
 int isLegalAction(Game g, action a);
 //static void parsePath(action a);
 
+
 int main(int argc, char* argv[]) {
     printf("Started\n");
     makeGame();
@@ -147,7 +148,6 @@ void createRegions(Game g) {
     }
     
 }
-
 
 void makeAction(Game g, action a) {
     if (!isLegalAction(g, a)){
